@@ -42,14 +42,10 @@ class Block {
             auxHash = null;                                
             let calculatedHash = SHA256(JSON.stringify(newBlock)).toString();   // Recalculate the hash of the Block
             if(calculatedHash != auxHash){                                      // Comparing if the hashes changed
-                resolve(false)
+                resolve(false)                                                  // Returning the Block is not valid
             } else {
-                resolve(true)
+                resolve(true)                                                   // Returning the Block is valid
             }
-            // Returning the Block is not valid
-            
-            // Returning the Block is valid
-
         });
     }
 
