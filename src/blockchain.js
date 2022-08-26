@@ -181,17 +181,13 @@ class Blockchain {
      * Remember the star should be returned decoded.
      * @param {*} address 
      */
-    getStarsByWalletAddress (address) {
+     getStarsByWalletAddress (address) {
         let self = this;
         let stars = [];
         return new Promise((resolve, reject) => {
-            self.chain.forEach((b) => {
-                let data = b.getData();
-                if(data) {
-                    if(data.owner === address){
-                        stars.push(data);
-                    }
-                }
+            this.chain.forEach(async (block) => {
+                const blockData = await block.getBData();
+                if (blockData && blockData.owner === address) stars.push(blockData);
             });
             resolve(stars);
         });
