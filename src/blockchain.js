@@ -74,7 +74,7 @@ class Blockchain {
                 // Verify signature
                 blockObj.hash = SHA256(JSON.stringify(blockObj)).toString();
                 self.chain.push(blockObj);
-                self.height = self.chain - 1;
+                self.height = self.chain.length - 1;
                 resolve(blockObj);
             } else {
                 //Only for the Genesis Block
