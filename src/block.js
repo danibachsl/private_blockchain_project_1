@@ -16,11 +16,11 @@ class Block {
 
     // Constructor - argument data will be the object containing the transaction data
 	constructor(data){
-		this.hash = null;                                           // Hash of the block
-		this.height = 0;                                            // Block Height (consecutive number of each block)
-		this.body = Buffer.from(JSON.stringify(data)).toString('hex');   // Will contain the transactions stored in the block, by default it will encode the data
-		this.time = 0;                                              // Timestamp for the Block creation
-		this.previousBlockHash = null;                              // Reference to the previous Block Hash
+		this.hash = null;                                                   // Hash of the block
+		this.height = 0;                                                    // Block Height (consecutive number of each block)
+		this.body = Buffer.from(JSON.stringify(data)).toString('hex');      // Will contain the transactions stored in the block, by default it will encode the data
+		this.time = 0;                                                      // Timestamp for the Block creation
+		this.previousBlockHash = null;                                      // Reference to the previous Block Hash
     }
     
     /**
@@ -38,9 +38,9 @@ class Block {
     validate() {
         let self = this;
         return new Promise((resolve, reject) => {
-            let auxHash = self.hash;// Save in auxiliary variable the current block hash
+            let auxHash = self.hash;                                             // Save in auxiliary variable the current block hash
             self.hash = null;                                
-            let calculatedHash = SHA256(JSON.stringify(this)).toString();   // Recalculate the hash of the Block
+            let calculatedHash = SHA256(JSON.stringify(this)).toString();        // Recalculate the hash of the Block
             if(calculatedHash !== auxHash){                                      // Comparing if the hashes changed
                 resolve(false);                                                  // Returning the Block is not valid
             } else {
@@ -48,6 +48,16 @@ class Block {
             }
         });
     }
+
+    // return self.hash === SHA256(
+    //     JSON.stringify(
+    //         {
+    //             ...self,
+    //             "hash": null
+    //         }
+    //     )
+    // ).toString();
+
 
     /**
      *  Auxiliary Method to return the block body (decoding the data)

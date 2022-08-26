@@ -69,8 +69,7 @@ class Blockchain {
             blockObj.time = new Date().getTime().toString().slice(0,-3);
             if (height >= 0) {
                 blockObj.height = height + 1;
-                let previousBlock = self.chain[self.height];
-                blockObj.previousBlockHash = previousBlock.hash;
+                blockObj.previousBlockHash = self.chain[self.height].hash;
                 // Verify signature
                 blockObj.hash = SHA256(JSON.stringify(blockObj)).toString();
                 self.chain.push(blockObj);
@@ -81,8 +80,16 @@ class Blockchain {
                 blockObj.height = height + 1;
                 blockObj.hash = SHA256(JSON.stringify(blockObj)).toString();
                 self.chain.push(blockObj);
-                self.height = self.chain.length - 1;
-                resolve(blockObj);
+
+                // Validate chain, removing last added block if chain is invalid
+                self.validateChain().then(errorLog => {
+                        if (errorLog.length > 0) {
+                            self.chain.pop();
+                            reject(errorLog);
+                        } else {
+                            resolve(blockObj);
+                        }
+                });
             }
         });
     }
@@ -124,7 +131,7 @@ class Blockchain {
         return new Promise(async (resolve, reject) => {
             let time = parseInt(message.split(':')[1]);
             let currentTime = parseInt(new Date().getTime().toString().slice(0, -3));
-            if((time + (5*60*1000)) >= currentTime){
+            if(time > currentTime - 300){
                 // verify the signature
                 let isValid = bitcoinMessage.verify(message, address, signature);
                 if(isValid){
